@@ -1,0 +1,83 @@
+/* todolist.css */
+
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f8f8;
+  }
+  
+  .container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+  }
+  
+  h2 {
+    color: #333;
+  }
+  
+  input {
+    width: 70%;
+    padding: 10px;
+    margin-right: 10px;
+    box-sizing: border-box;
+  }
+  
+  button {
+    background-color: #4caf50;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #45a049;
+  }
+  
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .todos {
+    margin: 10px auto;
+    width: fit-content;
+    padding: 10px;
+    border: black 1px solid;
+    border-radius: 8px;
+  }
+
+  .todos:hover {
+    background-color: #ccc;
+}
+  
+  .DayPicker {
+    font-size: 16px;
+  }
+  
+  .DayPicker-Day {
+    outline: none;
+  }
+  
+  .DayPicker-Day--today {
+    color: #d0021b;
+  }
+  
+  .DayPicker-Day--selected {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  .DayPicker-Day--disabled {
+    color: #dce0e0;
+  }
+  
+  .DayPicker-Day--outside {
+    color: #8b9898;
+  }
+  

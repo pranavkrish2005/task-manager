@@ -1,56 +1,64 @@
-
 import React, { useState } from 'react';
+import { DayPicker } from 'react-day-picker';
+import 'react-day-picker/dist/style.css';
 import './todolist.css';
 
-const TodoList = () => {
+const ToDoList = () => {
+  const [inputText, setInputText] = useState('');
+  const [dueDate, setDueDate] = useState(new Date());
   const [tasks, setTasks] = useState([]);
-  const [newTask, setNewTask] = useState('');
 
-  const addTask = () => {
-    // checks if the string is empty
-    if (newTask.trim() !== '') {
-      // adds newtask to the existing tasks array
-      setTasks([...tasks, newTask]);
-      // resets the newTask to empty string
-      setNewTask('');
-    }
+  const handleDateChange = (selectedDate) => {
+    setDueDate(selectedDate);
   };
 
-  const removeTask = (index) => {
-    const updatedTasks = [...tasks];
-    updatedTasks.splice(index, 1);
-    setTasks(updatedTasks);
+  const handleAddTask = () => {
+    if (inputText.trim() === '' || !dueDate) {
+      alert('Please enter a task and select a due date.');
+      return;
+    }
+
+    const newTask = {
+      text: inputText,
+      dueDate: dueDate,
+    };
+
+    setTasks([...tasks, newTask]);
+    setInputText('');
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      addTask();
-    }
-  }
+  const handleSortByDueDate = () => {
+    const sortedTasks = [...tasks].sort((a, b) => a.dueDate - b.dueDate);
+    setTasks(sortedTasks);
+  };
 
   return (
-    <div id="todolist">
-      <h2>To-Do List</h2>
-      <input
-          type="text"
-          value={newTask}
-          onKeyDown={handleKeyDown}
-          onChange={(e) => setNewTask(e.target.value)}
-          placeholder="Add a new task"
-        />
-        <button onClick={addTask}>Add Task</button>
-      <ul>
-        {tasks.map((task, index) => (
-          <li key={index}>
-            {task}
-            <button onClick={() => removeTask(index)}>X</button>
-          </li>
-        ))}
-      </ul>
+    <div>
       <div>
+        <input
+          type="text"
+          value={inputText}
+          onChange={(e) => setInputText(e.target.value)}
+          placeholder="Enter task"
+        />
+        <button onClick={handleAddTask}>Add Task</button>
+      </div>
+      <div>
+        <h2>Tasks</h2>
+        <button onClick={handleSortByDueDate}>Sort by Due Date</button>
+        <ul>
+          {tasks.map((task, index) => (
+            <li className="todos" key={index}>
+              <strong>{task.text}</strong> - Due on {task.dueDate.toLocaleDateString()}
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div>
+        <DayPicker selected={dueDate} onDayClick={handleDateChange} />
       </div>
     </div>
   );
 };
 
-export default TodoList;
+export default ToDoList;

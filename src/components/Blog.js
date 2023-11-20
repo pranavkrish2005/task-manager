@@ -1,92 +1,65 @@
-import React, { useState } from "react";
-import './Blog.css';
-import { format } from 'date-fns';
-
+import React, { useState } from 'react';
 import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
-
+import './Blog.css';
 
 const Blog = () => {
-    const [blogs, setBlogs] = useState([]);
-    const [inputText, setInputText] = useState('');
-    const [selected, setSelected] = useState(new Date())
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [blogs, setBlogs] = useState([]);
 
-    const addBlog = () => {
-        const trimmedText = document.getElementById('blog-text').value.trim();
-        if (trimmedText !== '' && selected !== '') {
-            const currentDate = selected.toISOString().split('T')[0];
-            const existingBlogIndex = blogs.findIndex(blog => blog.date === selected);
+  const handleDateClick = (date) => {
+    setSelectedDate(date);
+  };
 
-            if (existingBlogIndex !== -1) {
-                // Date already exists, add a new blog to the existing date
-                setBlogs(prevBlogs => {
-                    const updatedBlogs = [...prevBlogs];
-                    updatedBlogs[existingBlogIndex].blogs.push({ text: trimmedText });
-                    console.log(updatedBlogs)
-                    return updatedBlogs;
-                });
-            } else {
-                // Date doesn't exist, create a new entry for the date
-                setBlogs(prevBlogs => [...prevBlogs, { date: currentDate, blogs: [{ text: trimmedText }] }]);
-            }
-
-            setInputText('');
-            document.getElementById('blog-text').value = '';
-            // Close the date picker
-        }
+  const handleAddBlog = (title, content) => {
+    if (!selectedDate) {
+      alert('Please select a date for the blog post.');
+      return;
     }
 
+    const newBlog = {
+      date: selectedDate,
+      title: title,
+      content: content,
+    };
+    document.getElementById('blogTitle').value = '';
+    document.getElementById('blogContent').value = '';
+    setBlogs([...blogs, newBlog]);
 
-    const removeBlog = (dateIndex, blogIndex) => {
-        setBlogs(prevBlogs => {
-            const updatedBlogs = [...prevBlogs];
-            const selectedDateBlogs = updatedBlogs[dateIndex].blogs;
-    
-            selectedDateBlogs.splice(blogIndex, 1);
-    
-            // If there are no blogs left for the selected date, remove the entire date entry
-            if (selectedDateBlogs.length === 0) {
-                updatedBlogs.splice(dateIndex, 1);
-            }
-    
-            return updatedBlogs;
-        });
-    }
+  };
 
-    return (
-        <div id="blog">
-            <h2>Blog</h2>
-            <textarea id="blog-text">
-            </textarea>
-            <button onClick={addBlog}>Add Blog</button>
-            <hr />
-            <h2>Previous Blogs</h2>
-            <DayPicker
-                mode="single"
-                selected={selected}
-                onSelect={setSelected}
-            />
-                    {blogs.map((blog, index) => {
-                        if (selected.toISOString().split('T')[0] === blog.date) {
-                            return (
-                                <div key={index}>
-                                    <h3>{format(new Date(blog.date), 'EEEE, MMMM do yyyy')}</h3>
-                                    <ul>
-                                        {blog.blogs.map((blog, blogIndex) => {
-                                            return (
-                                                <li key={blogIndex}>
-                                                    <p>{blog.text}</p>
-                                                    <button onClick={() => removeBlog(index, blogIndex)}>Remove Blog</button>
-                                                </li>
-                                            )
-                                        })}
-                                    </ul>
-                                </div>
-                            )
-                        }
-                    })}
-        </div>
-    );
-}
+  return (
+    <div>
+      <div>
+        <h2>Select Date</h2>
+        <DayPicker selected={selectedDate} onDayClick={handleDateClick} />
+      </div>
+      <div>
+        <h2>Add Blog Post</h2>
+        <input type="text" placeholder="Blog Title" id="blogTitle" />
+        <textarea placeholder="Blog Content" id="blogContent" />
+        <button
+          onClick={() => {
+            const title = document.getElementById('blogTitle').value;
+            const content = document.getElementById('blogContent').value;
+            handleAddBlog(title, content);
+          }}
+        >
+          Add Blog
+        </button>
+      </div>
+      <div>
+        <h2>Blogs</h2>
+        {blogs.map((blog, index) => (
+          <div className="all-blogs" key={index} style={{ display: blog.date.getTime() === selectedDate?.getTime() ? 'block' : 'none' }}>
+            <h3>{blog.title}</h3>
+            <p>Date: {blog.date.toLocaleDateString()}</p>
+            <p>{blog.content}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 export default Blog;
